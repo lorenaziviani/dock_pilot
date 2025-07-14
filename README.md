@@ -1,6 +1,6 @@
 # DockPilot
 
-DockPilot é um orquestrador leve de microsserviços locais com deploy automatizado, health checks e painel de controle.
+DockPilot é um orquestrador leve de microsserviços locais com deploy automatizado, health checks, painel de controle e dashboard interativo no terminal.
 
 ## Propósito
 
@@ -8,14 +8,15 @@ DockPilot simplifica o desenvolvimento e a gestão local de microsserviços, ofe
 
 - Deploy automatizado de containers baseado em configuração YAML
 - Monitoramento de health check para cada serviço
-- CLI e (futuramente) painel de controle para fácil gerenciamento
+- CLI, painel de controle e dashboard TUI para fácil gerenciamento
 - Gerenciamento completo do ciclo de vida dos containers Docker
-- **Monitoramento contínuo e autocorreção dos serviços**
+- Monitoramento contínuo e autocorreção dos serviços
+- **Dashboard visual e interativo no terminal**
 
 ## Arquitetura
 
 ```
-DockPilot CLI (start/stop/restart/status/monitor) → Leitura do YAML → Container runner (volumes, redes, portas) + Health check loop + Autocorreção
+DockPilot CLI (start/stop/restart/status/monitor/dashboard) → Leitura do YAML → Container runner (volumes, redes, portas) + Health check loop + Autocorreção + Dashboard TUI
 ```
 
 ## Primeiros Passos
@@ -60,14 +61,27 @@ cd cmd/orchestrator
 - `restart <serviço|all>` — Reinicia um ou todos os containers
 - `status <serviço|all>` — Mostra o status de um ou todos os containers
 - `monitor` — Inicia o monitoramento contínuo dos serviços, com autocorreção e logs detalhados
+- `dashboard` — Abre o dashboard visual no terminal (TUI)
 
 Exemplo:
 
 ```sh
+go run main.go dashboard
 go run main.go monitor
 go run main.go start all
 go run main.go status users-api
 ```
+
+## Dashboard TUI (Terminal User Interface)
+
+- Visualize todos os serviços, status, porta, health e uptime (placeholder)
+- Atalhos interativos:
+  - `s` = start serviço selecionado
+  - `r` = restart serviço selecionado
+  - `l` = logs (placeholder)
+  - `q` = sair do dashboard
+- Atualização automática a cada 5 segundos
+- Experiência visual produtiva para dev local
 
 ## Sistema de Health Check e Autocorreção
 
@@ -81,7 +95,7 @@ go run main.go status users-api
 
 ## Estrutura do Projeto
 
-- `cmd/orchestrator` — Ponto de entrada principal (CLI)
+- `cmd/orchestrator` — Ponto de entrada principal (CLI e dashboard)
 - `pkg/health` — Monitoramento, health check e autocorreção
 - `pkg/services` — Gerenciamento dos serviços e integração Docker
 - `internal/config` — Parser e gestão de configuração
@@ -91,7 +105,8 @@ go run main.go status users-api
 
 - Integração com container runner (completa)
 - Loop de health check e autocorreção (completo)
-- Painel de controle (UI)
+- Dashboard TUI (completo)
+- Painel de controle (UI web, opcional)
 - Suporte avançado a volumes, redes e portas
 
 ---

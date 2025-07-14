@@ -82,7 +82,10 @@ func main() {
 		monitor := health.NewMonitor(dockerSvc, cfg, logger)
 		fmt.Println("[INFO] Starting health monitoring loop...")
 		monitor.MonitorLoop(ctx, 10*time.Second)
+	case "dashboard":
+		fmt.Println("[INFO] Starting DockPilot dashboard (TUI)...")
+		RunTUI(ctx, cfg, dockerSvc)
 	default:
-		fmt.Println("Command not recognized. Use: start, stop, restart, status, monitor")
+		fmt.Println("Command not recognized. Use: start, stop, restart, status, monitor, dashboard")
 	}
 }
