@@ -3,15 +3,17 @@ package main
 import (
 	"context"
 	"dock_pilot/internal/config"
+	"dock_pilot/pkg/health"
 	"dock_pilot/pkg/services"
 	"fmt"
 	"log"
 	"os"
+	"time"
 )
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: orchestrator <start|stop|restart|status> [service|all]")
+		fmt.Println("Usage: orchestrator <start|stop|restart|status|monitor> [service|all]")
 		os.Exit(1)
 	}
 	cmd := os.Args[1]
@@ -75,7 +77,12 @@ func main() {
 				}
 			}
 		}
+	case "monitor":
+		logger := log.New(os.Stdout, "", log.LstdFlags)
+		monitor := health.NewMonitor(dockerSvc, cfg, logger)
+		fmt.Println("[INFO] Starting health monitoring loop...")
+		monitor.MonitorLoop(ctx, 10*time.Second)
 	default:
-		fmt.Println("Command not recognized. Use: start, stop, restart, status")
+		fmt.Println("Command not recognized. Use: start, stop, restart, status, monitor")
 	}
 }

@@ -10,11 +10,12 @@ DockPilot simplifica o desenvolvimento e a gestão local de microsserviços, ofe
 - Monitoramento de health check para cada serviço
 - CLI e (futuramente) painel de controle para fácil gerenciamento
 - Gerenciamento completo do ciclo de vida dos containers Docker
+- **Monitoramento contínuo e autocorreção dos serviços**
 
 ## Arquitetura
 
 ```
-DockPilot CLI (start/stop/restart/status) → Leitura do YAML → Container runner (volumes, redes, portas) + Health check loop
+DockPilot CLI (start/stop/restart/status/monitor) → Leitura do YAML → Container runner (volumes, redes, portas) + Health check loop + Autocorreção
 ```
 
 ## Primeiros Passos
@@ -58,18 +59,30 @@ cd cmd/orchestrator
 - `stop <serviço|all>` — Para um ou todos os containers
 - `restart <serviço|all>` — Reinicia um ou todos os containers
 - `status <serviço|all>` — Mostra o status de um ou todos os containers
+- `monitor` — Inicia o monitoramento contínuo dos serviços, com autocorreção e logs detalhados
 
 Exemplo:
 
 ```sh
+go run main.go monitor
 go run main.go start all
 go run main.go status users-api
 ```
 
+## Sistema de Health Check e Autocorreção
+
+- O comando `monitor` verifica periodicamente o endpoint `/health` de cada serviço.
+- Classificação automática:
+  - **healthy**: serviço responde 200 OK
+  - **degraded**: responde, mas não 200 OK
+  - **unreachable**: não responde
+- Serviços `unreachable` são reiniciados automaticamente.
+- Logs detalhados por serviço são exibidos na CLI em tempo real.
+
 ## Estrutura do Projeto
 
 - `cmd/orchestrator` — Ponto de entrada principal (CLI)
-- `pkg/health` — Lógica de health check (a implementar)
+- `pkg/health` — Monitoramento, health check e autocorreção
 - `pkg/services` — Gerenciamento dos serviços e integração Docker
 - `internal/config` — Parser e gestão de configuração
 - `docs/` — Documentação e diagramas
@@ -77,7 +90,7 @@ go run main.go status users-api
 ## Roadmap
 
 - Integração com container runner (completa)
-- Loop de health check
+- Loop de health check e autocorreção (completo)
 - Painel de controle (UI)
 - Suporte avançado a volumes, redes e portas
 
