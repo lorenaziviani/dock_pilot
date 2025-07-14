@@ -4,26 +4,32 @@
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="4" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="2" target="3">
+                <mxCell id="4" value="" style="edgeStyle=none;html=1;" parent="1" source="2" target="3" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="2" value="DockPilot CLI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-                    <mxGeometry x="90" y="280" width="120" height="60" as="geometry"/>
+                <mxCell id="2" value="DockPilot CLI&lt;br&gt;(start/stop/restart/status)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4F8DFD;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="280" width="160" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="6" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="3" target="5">
+                <mxCell id="6" value="" style="edgeStyle=none;html=1;" parent="1" source="3" target="5" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="Config Parser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
-                    <mxGeometry x="290" y="280" width="120" height="60" as="geometry"/>
+                <mxCell id="3" value="Config Parser&lt;br&gt;(YAML)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6FCF97;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="280" width="140" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="8" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="5" target="7">
+                <mxCell id="8" value="" style="edgeStyle=none;html=1;" parent="1" source="5" target="7" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="5" value="Container Runner" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
-                    <mxGeometry x="490" y="280" width="120" height="60" as="geometry"/>
+                <mxCell id="5" value="Container Runner&lt;br&gt;(Volumes, Networks, Ports)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFB366;" parent="1" vertex="1">
+                    <mxGeometry x="490" y="280" width="200" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="7" value="Health Check Loop" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
-                    <mxGeometry x="490" y="420" width="120" height="60" as="geometry"/>
+                <mxCell id="7" value="Health Check Loop" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A685E2;" parent="1" vertex="1">
+                    <mxGeometry x="530" y="390" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="Batch/Individual Control" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2C94C;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="370" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="Volumes/Networks/Ports Validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#56CCF2;" parent="1" vertex="1">
+                    <mxGeometry x="490" y="210" width="200" height="40" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

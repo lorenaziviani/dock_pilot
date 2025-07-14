@@ -7,10 +7,13 @@ import (
 )
 
 type ServiceConfig struct {
-	Name        string `yaml:"name"`
-	Image       string `yaml:"image"`
-	Port        int    `yaml:"port"`
-	Healthcheck string `yaml:"healthcheck"`
+	Name        string   `yaml:"name"`
+	Image       string   `yaml:"image"`
+	Port        int      `yaml:"port"`
+	Healthcheck string   `yaml:"healthcheck"`
+	Volumes     []string `yaml:"volumes"`
+	Networks    []string `yaml:"networks"`
+	Ports       []string `yaml:"ports"`
 }
 
 type Config struct {

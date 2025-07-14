@@ -3,3 +3,9 @@ services:
     image: users-api:latest
     port: 8080
     healthcheck: /health
+    volumes:
+      - ./data:/app/data
+    networks:
+      - dockpilot-net
+    ports:
+      - 8080:8080
