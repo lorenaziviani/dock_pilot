@@ -1,14 +1,14 @@
 <mxfile host="65bd71144e">
     <diagram id="Scj8hIH8UpDm17n62uUn" name="Page-1">
-        <mxGraphModel dx="895" dy="686" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+        <mxGraphModel dx="2064" dy="686" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
                 <mxCell id="4" value="" style="edgeStyle=none;html=1;" parent="1" source="2" target="3" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="2" value="DockPilot CLI&lt;div&gt;(start/stop/restart/status/monitor/dashboard)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4F8DFD;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="280" width="250" height="60" as="geometry"/>
+                <mxCell id="2" value="DockPilot CLI&lt;div&gt;(start/stop/restart/status/monitor/dashboard/metrics/dump)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4F8DFD;" parent="1" vertex="1">
+                    <mxGeometry x="-10" y="280" width="320" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="6" value="" style="edgeStyle=none;html=1;" parent="1" source="3" target="5" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -26,7 +26,7 @@
                     <mxGeometry x="530" y="414" width="220" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="9" value="Batch/Individual Control" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2C94C;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="350" width="160" height="40" as="geometry"/>
+                    <mxGeometry x="-10" y="350" width="160" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="10" value="Volumes/Networks/Ports Validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#56CCF2;" parent="1" vertex="1">
                     <mxGeometry x="540" y="210" width="200" height="40" as="geometry"/>
@@ -38,7 +38,13 @@
                     <mxGeometry x="530" y="500" width="220" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="13" value="Dashboard TUI (Terminal)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27AE60;" vertex="1" parent="1">
-                    <mxGeometry x="60" y="400" width="220" height="50" as="geometry"/>
+                    <mxGeometry x="-10" y="400" width="220" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="Prometheus Metrics Export (/metrics)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2994A;" vertex="1" parent="1">
+                    <mxGeometry x="770" y="500" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="Config/State Dump (JSON)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2D9CDB;" vertex="1" parent="1">
+                    <mxGeometry x="770" y="560" width="220" height="40" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

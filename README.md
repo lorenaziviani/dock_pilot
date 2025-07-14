@@ -1,6 +1,6 @@
 # DockPilot
 
-DockPilot é um orquestrador leve de microsserviços locais com deploy automatizado, health checks, painel de controle e dashboard interativo no terminal.
+DockPilot é um orquestrador leve de microsserviços locais com deploy automatizado, health checks, painel de controle, dashboard interativo e suporte a métricas/logs para análise.
 
 ## Propósito
 
@@ -11,12 +11,13 @@ DockPilot simplifica o desenvolvimento e a gestão local de microsserviços, ofe
 - CLI, painel de controle e dashboard TUI para fácil gerenciamento
 - Gerenciamento completo do ciclo de vida dos containers Docker
 - Monitoramento contínuo e autocorreção dos serviços
-- **Dashboard visual e interativo no terminal**
+- Dashboard visual e interativo no terminal
+- **Logs estruturados e métricas Prometheus para análise e debugging**
 
 ## Arquitetura
 
 ```
-DockPilot CLI (start/stop/restart/status/monitor/dashboard) → Leitura do YAML → Container runner (volumes, redes, portas) + Health check loop + Autocorreção + Dashboard TUI
+DockPilot CLI (start/stop/restart/status/monitor/dashboard/metrics/dump) → Leitura do YAML → Container runner (volumes, redes, portas) + Health check loop + Autocorreção + Dashboard TUI + Exportação de métricas/logs
 ```
 
 ## Primeiros Passos
@@ -45,6 +46,7 @@ DOCKPILOT_ENV=development
 DOCKER_HOST=unix:///var/run/docker.sock
 DOCKPILOT_NETWORK=dockpilot-net
 DOCKPILOT_DATA_PATH=./data
+DOCKPILOT_LOG_DIR=./logs
 ```
 
 4. **Execute o orquestrador:**
@@ -62,15 +64,26 @@ cd cmd/orchestrator
 - `status <serviço|all>` — Mostra o status de um ou todos os containers
 - `monitor` — Inicia o monitoramento contínuo dos serviços, com autocorreção e logs detalhados
 - `dashboard` — Abre o dashboard visual no terminal (TUI)
+- `metrics` — Exporta métricas Prometheus em http://localhost:2112/metrics
+- `dump` — Exporta configuração e estado atual dos serviços para análise/debugging
 
 Exemplo:
 
 ```sh
+go run main.go metrics
+go run main.go dump
 go run main.go dashboard
 go run main.go monitor
 go run main.go start all
 go run main.go status users-api
 ```
+
+## Logs estruturados e métricas
+
+- Logs de cada serviço são salvos em arquivos separados na pasta definida por `DOCKPILOT_LOG_DIR` (ex: `./logs/users-api.log`)
+- Última mensagem antes de crash pode ser consultada no log do serviço
+- Métricas Prometheus disponíveis em `/metrics` (exemplo: `dockpilot_service_status{service="users-api"} 1`)
+- Comando `dump` exporta configuração e status atual em `dockpilot_dump.json`
 
 ## Dashboard TUI (Terminal User Interface)
 
@@ -97,7 +110,7 @@ go run main.go status users-api
 
 - `cmd/orchestrator` — Ponto de entrada principal (CLI e dashboard)
 - `pkg/health` — Monitoramento, health check e autocorreção
-- `pkg/services` — Gerenciamento dos serviços e integração Docker
+- `pkg/services` — Gerenciamento dos serviços, integração Docker e logging
 - `internal/config` — Parser e gestão de configuração
 - `docs/` — Documentação e diagramas
 
@@ -106,6 +119,7 @@ go run main.go status users-api
 - Integração com container runner (completa)
 - Loop de health check e autocorreção (completo)
 - Dashboard TUI (completo)
+- Exportação de métricas e logs (completo)
 - Painel de controle (UI web, opcional)
 - Suporte avançado a volumes, redes e portas
 

@@ -5,8 +5,10 @@ import (
 	"dock_pilot/internal/config"
 	"dock_pilot/pkg/health"
 	"dock_pilot/pkg/services"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 )
@@ -85,7 +87,51 @@ func main() {
 	case "dashboard":
 		fmt.Println("[INFO] Starting DockPilot dashboard (TUI)...")
 		RunTUI(ctx, cfg, dockerSvc)
+	case "dump":
+		fmt.Println("[INFO] Exporting config and service state...")
+		file, err := os.Create("dockpilot_dump.json")
+		if err != nil {
+			log.Fatalf("failed to create dump: %v", err)
+		}
+		defer file.Close()
+		statusMap := make(map[string]string)
+		for _, svc := range cfg.Services {
+			status, _ := dockerSvc.ContainerStatus(ctx, svc.Name)
+			statusMap[svc.Name] = status
+		}
+		type Dump struct {
+			Config interface{}       `json:"config"`
+			Status map[string]string `json:"status"`
+			Time   string            `json:"time"`
+		}
+		dump := Dump{Config: cfg, Status: statusMap, Time: time.Now().Format(time.RFC3339)}
+		enc := json.NewEncoder(file)
+		enc.SetIndent("", "  ")
+		if err := enc.Encode(dump); err != nil {
+			log.Fatalf("failed to export dump: %v", err)
+		}
+		fmt.Println("[OK] Dump saved to dockpilot_dump.json")
+	case "metrics":
+		fmt.Println("[INFO] Exposing Prometheus metrics at http://localhost:2112/metrics ...")
+		http.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
+			for _, svc := range cfg.Services {
+				status, _ := dockerSvc.ContainerStatus(ctx, svc.Name)
+				fmt.Fprintf(w, "dockpilot_service_status{service=\"%s\"} %d\n", svc.Name, statusToMetric(status))
+			}
+		})
+		log.Fatal(http.ListenAndServe(":2112", nil))
 	default:
 		fmt.Println("Command not recognized. Use: start, stop, restart, status, monitor, dashboard")
+	}
+}
+
+func statusToMetric(status string) int {
+	switch status {
+	case "running":
+		return 1
+	case "exited":
+		return 0
+	default:
+		return -1
 	}
 }
