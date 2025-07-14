@@ -22,4 +22,22 @@ build:
 
 # Run dashboard
 run:
-	go run ./cmd/orchestrator/main.go dashboard 
+	export $(shell grep -v '^#' .env | xargs) ; \
+	export DOCKER_HOST=$$DOCKER_HOST ; \
+	go run ./cmd/orchestrator dashboard 
+
+monitoring:
+	export $(shell grep -v '^#' .env | xargs) ; \
+	export DOCKER_HOST=$$DOCKER_HOST ; \
+	go run ./cmd/orchestrator monitor all
+
+status: 
+	export $(shell grep -v '^#' .env | xargs) ; \
+	export DOCKER_HOST=$$DOCKER_HOST ; \
+	go run ./cmd/orchestrator status all 
+
+start-all: 
+	export $(shell grep -v '^#' .env | xargs) ; \
+	export DOCKER_HOST=$$DOCKER_HOST ; \
+	go run ./cmd/orchestrator start all 	
+	

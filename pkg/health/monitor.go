@@ -54,15 +54,26 @@ func (m *Monitor) CheckService(ctx context.Context, svc config.ServiceConfig) Se
 func (m *Monitor) MonitorLoop(ctx context.Context, interval time.Duration) {
 	for {
 		for _, svc := range m.Config.Services {
+			logger, err := services.NewServiceLogger(svc.Name, "./logs")
+			if err != nil {
+				m.Logger.Printf("[ERROR] Falha ao criar logger para %s: %v", svc.Name, err)
+				continue
+			}
+
 			health := m.CheckService(ctx, svc)
+			logger.Log(fmt.Sprintf("[%s] %s - %s", health.Status, svc.Name, health.Detail))
 			m.Logger.Printf("[%s] %s - %s", health.Status, svc.Name, health.Detail)
+
 			if health.Status == Unreachable {
+				logger.Log(fmt.Sprintf("[ACTION] Restarting %s...", svc.Name))
 				m.Logger.Printf("[ACTION] Restarting %s...", svc.Name)
 				err := m.Docker.RestartContainer(ctx, svc.Name)
 				if err != nil {
+					logger.Log(fmt.Sprintf("[ERROR] Failed to restart %s: %v", svc.Name, err))
 					m.Logger.Printf("[ERROR] Failed to restart %s: %v", svc.Name, err)
 				}
 			}
+			logger.Close()
 		}
 		time.Sleep(interval)
 	}

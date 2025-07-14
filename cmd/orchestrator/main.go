@@ -38,7 +38,7 @@ func main() {
 	case "start":
 		for _, svc := range cfg.Services {
 			if arg == "all" || arg == svc.Name {
-				err := dockerSvc.StartContainer(ctx, svc.Name, svc.Image, nil, nil)
+				err := dockerSvc.StartContainer(ctx, svc.Name, svc.Image, svc.Ports, nil)
 				if err != nil {
 					fmt.Printf("[ERROR] %s: %v\n", svc.Name, err)
 				} else {

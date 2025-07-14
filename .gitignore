@@ -1,2 +1,5 @@
 .gitconfig*
 git-switch.sh
+*.log
+*.json
+.env

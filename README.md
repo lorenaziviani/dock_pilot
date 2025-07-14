@@ -1,128 +1,208 @@
-# DockPilot
+# 🚢 DockPilot - Orquestrador Local de Microsserviços com Dashboard TUI
 
-DockPilot é um orquestrador leve de microsserviços locais com deploy automatizado, health checks, painel de controle, dashboard interativo e suporte a métricas/logs para análise.
+<div align="center">
+<img src=".gitassets/cover.png" width="350" />
 
-## Propósito
+<div data-badges>
+  <img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Go" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/TUI-27AE60?style=for-the-badge" alt="TUI" />
+</div>
+</div>
 
-DockPilot simplifica o desenvolvimento e a gestão local de microsserviços, oferecendo:
+O **DockPilot** é um orquestrador leve para microsserviços locais, desenvolvido em Go, com deploy automatizado, health checks, painel de controle, dashboard interativo no terminal (TUI) e suporte a métricas/logs para análise e debugging.
 
-- Deploy automatizado de containers baseado em configuração YAML
-- Monitoramento de health check para cada serviço
-- CLI, painel de controle e dashboard TUI para fácil gerenciamento
-- Gerenciamento completo do ciclo de vida dos containers Docker
-- Monitoramento contínuo e autocorreção dos serviços
-- Dashboard visual e interativo no terminal
-- **Logs estruturados e métricas Prometheus para análise e debugging**
+✔️ **Orquestração de containers Docker via Go**
 
-## Arquitetura
+✔️ **Dashboard TUI interativo com status, health, logs e atalhos**
 
+✔️ **Health check automático e autocorreção de serviços**
+
+✔️ **Exportação de métricas Prometheus e logs estruturados**
+
+✔️ **Configuração simples via YAML e ambiente Docker-friendly**
+
+---
+
+## 🖥️ Como rodar este projeto
+
+### Requisitos:
+
+- [Go 1.20+](https://golang.org/doc/install)
+- [Docker Desktop](https://docs.docker.com/get-docker/)
+
+### Execução:
+
+1. Clone este repositório:
+   ```sh
+   git clone https://github.com/lorenaziviani/dock_pilot.git
+   cd dock_pilot
+   ```
+2. Configure variáveis de ambiente (opcional):
+   ```sh
+   cp .env.example .env
+   # Edite .env conforme necessário
+   ```
+3. Edite o `config.yaml` para definir seus serviços:
+   ```yaml
+   services:
+     - name: users-api
+       image: users-api:latest
+       port: 8080
+       healthcheck: /health
+       ports:
+         - 8080:8080
+   ```
+4. Suba um serviço de exemplo (mock):
+   ```sh
+   docker build -t users-api:latest ./users-api
+   ```
+5. Execute o dashboard TUI:
+   ```sh
+   make run
+   # ou
+   DOCKER_HOST=unix:///Users/$(whoami)/.docker/run/docker.sock go run ./cmd/orchestrator/main.go dashboard
+   ```
+6. Execute outros comandos disponíveis:
+   ```sh
+   go run ./cmd/orchestrator/main.go start all
+   go run ./cmd/orchestrator/main.go status all
+   go run ./cmd/orchestrator/main.go monitor
+   go run ./cmd/orchestrator/main.go metrics
+   go run ./cmd/orchestrator/main.go dump
+   ```
+
+---
+
+## 📸 Prints do Projeto
+
+### Dashboard TUI
+
+![dashboard tui](.gitassets/running.png)
+
+### Subindo serviços
+
+![start all](.gitassets/start.png)
+
+### Status dos containers
+
+![status all](.gitassets/status.png)
+
+### Monitoramento e autocorreção
+
+![monitor](.gitassets/monitoring.png)
+
+### Logs estruturados
+
+![logs](.gitassets/logs.png)
+
+### Exemplo de health check manual
+
+```sh
+curl http://localhost:8080/health
 ```
-DockPilot CLI (start/stop/restart/status/monitor/dashboard/metrics/dump) → Leitura do YAML → Container runner (volumes, redes, portas) + Health check loop + Autocorreção + Dashboard TUI + Exportação de métricas/logs
+
+![curl health](.gitassets/curl-health.png)
+
+---
+
+## 📝 Principais Features
+
+- **Dashboard TUI interativo**: status, health, logs, atalhos (start, restart, logs, quit)
+- **Orquestração de containers Docker**: start, stop, restart, status, monitoramento
+- **Health check automático**: classificação healthy, degraded, unreachable e autocorreção
+- **Logs estruturados por serviço**: arquivos em ./logs/<serviço>.log
+- **Exportação de métricas Prometheus**: endpoint /metrics
+- **Configuração simples via YAML**
+- **Exportação de dump de estado/configuração**
+
+---
+
+## 🛠️ Comandos de Teste
+
+```bash
+# Iniciar todos os serviços
+make run
+# Ou
+DOCKER_HOST=unix:///Users/$(whoami)/.docker/run/docker.sock go run ./cmd/orchestrator/main.go start all
+
+# Ver status
+make status
+# Ou
+DOCKER_HOST=unix:///Users/$(whoami)/.docker/run/docker.sock go run ./cmd/orchestrator/main.go status all
+
+# Monitoramento
+make monitor
+# Ou
+DOCKER_HOST=unix:///Users/$(whoami)/.docker/run/docker.sock go run ./cmd/orchestrator/main.go monitor
+
+# Exportar métricas
+make metrics
+# Ou
+DOCKER_HOST=unix:///Users/$(whoami)/.docker/run/docker.sock go run ./cmd/orchestrator/main.go metrics
+
+# Exportar dump
+make dump
+# Ou
+DOCKER_HOST=unix:///Users/$(whoami)/.docker/run/docker.sock go run ./cmd/orchestrator/main.go dump
 ```
 
-## Primeiros Passos
+---
 
-1. **Clone o repositório**
-2. **Edite o `config.yaml`** para definir seus serviços:
+## 🏗️ Arquitetura do Sistema
 
-```yaml
-services:
-  - name: users-api
-    image: users-api:latest
-    port: 8080
-    healthcheck: /health
-    volumes:
-      - ./data:/app/data
-    networks:
-      - dockpilot-net
-    ports:
-      - 8080:8080
-```
+![Architecture](docs/architecture.drawio.png)
 
-3. **Configure as variáveis de ambiente** (exemplo):
+**Fluxo detalhado:**
 
-```
+1. O usuário executa comandos via CLI ou dashboard TUI
+2. O DockPilot lê o YAML de configuração
+3. Orquestra containers Docker (start, stop, restart, status)
+4. Realiza health checks periódicos e autocorreção
+5. Exporta métricas e logs estruturados
+6. Dashboard TUI exibe status, health, logs e atalhos
+
+---
+
+## 🌐 Variáveis de Ambiente (exemplo)
+
+```env
+# .env.example
+DOCKER_HOST=unix:///Users/lorenaziviani/.docker/run/docker.sock
 DOCKPILOT_ENV=development
-DOCKER_HOST=unix:///var/run/docker.sock
 DOCKPILOT_NETWORK=dockpilot-net
 DOCKPILOT_DATA_PATH=./data
 DOCKPILOT_LOG_DIR=./logs
 ```
 
-4. **Execute o orquestrador:**
+---
 
-```sh
-cd cmd/orchestrator
- go run main.go <comando> [serviço|all]
+## 📁 Estrutura de Pastas
+
 ```
-
-### Comandos disponíveis
-
-- `start <serviço|all>` — Inicia um ou todos os containers definidos no YAML
-- `stop <serviço|all>` — Para um ou todos os containers
-- `restart <serviço|all>` — Reinicia um ou todos os containers
-- `status <serviço|all>` — Mostra o status de um ou todos os containers
-- `monitor` — Inicia o monitoramento contínuo dos serviços, com autocorreção e logs detalhados
-- `dashboard` — Abre o dashboard visual no terminal (TUI)
-- `metrics` — Exporta métricas Prometheus em http://localhost:2112/metrics
-- `dump` — Exporta configuração e estado atual dos serviços para análise/debugging
-
-Exemplo:
-
-```sh
-go run main.go metrics
-go run main.go dump
-go run main.go dashboard
-go run main.go monitor
-go run main.go start all
-go run main.go status users-api
+dock_pilot/
+  .env.example
+  config.yaml
+  Makefile
+  cmd/
+    orchestrator/      # CLI e dashboard TUI
+  pkg/
+    health/            # Health check e monitoramento
+    services/          # Gerenciamento Docker e logging
+  internal/
+    config/            # Parser de configuração YAML
+  users-api/           # Serviço mock de exemplo
+  .gitassets/          # Imagens para README
+  docs/                # Documentação e diagramas
 ```
-
-## Logs estruturados e métricas
-
-- Logs de cada serviço são salvos em arquivos separados na pasta definida por `DOCKPILOT_LOG_DIR` (ex: `./logs/users-api.log`)
-- Última mensagem antes de crash pode ser consultada no log do serviço
-- Métricas Prometheus disponíveis em `/metrics` (exemplo: `dockpilot_service_status{service="users-api"} 1`)
-- Comando `dump` exporta configuração e status atual em `dockpilot_dump.json`
-
-## Dashboard TUI (Terminal User Interface)
-
-- Visualize todos os serviços, status, porta, health e uptime (placeholder)
-- Atalhos interativos:
-  - `s` = start serviço selecionado
-  - `r` = restart serviço selecionado
-  - `l` = logs (placeholder)
-  - `q` = sair do dashboard
-- Atualização automática a cada 5 segundos
-- Experiência visual produtiva para dev local
-
-## Sistema de Health Check e Autocorreção
-
-- O comando `monitor` verifica periodicamente o endpoint `/health` de cada serviço.
-- Classificação automática:
-  - **healthy**: serviço responde 200 OK
-  - **degraded**: responde, mas não 200 OK
-  - **unreachable**: não responde
-- Serviços `unreachable` são reiniciados automaticamente.
-- Logs detalhados por serviço são exibidos na CLI em tempo real.
-
-## Estrutura do Projeto
-
-- `cmd/orchestrator` — Ponto de entrada principal (CLI e dashboard)
-- `pkg/health` — Monitoramento, health check e autocorreção
-- `pkg/services` — Gerenciamento dos serviços, integração Docker e logging
-- `internal/config` — Parser e gestão de configuração
-- `docs/` — Documentação e diagramas
-
-## Roadmap
-
-- Integração com container runner (completa)
-- Loop de health check e autocorreção (completo)
-- Dashboard TUI (completo)
-- Exportação de métricas e logs (completo)
-- Painel de controle (UI web, opcional)
-- Suporte avançado a volumes, redes e portas
 
 ---
 
-MIT License
+## 💎 Links úteis
+
+- [Go Documentation](https://golang.org/doc/)
+- [Docker](https://www.docker.com/)
+- [tview (TUI)](https://github.com/rivo/tview)
+- [Prometheus](https://prometheus.io/)
+
+---
