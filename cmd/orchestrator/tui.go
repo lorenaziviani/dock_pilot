@@ -70,9 +70,17 @@ func RunTUI(ctx context.Context, cfg *config.Config, docker *services.DockerServ
 		selected := cfg.Services[row-1]
 		switch event.Rune() {
 		case 's':
-			go docker.StartContainer(ctx, selected.Name, selected.Image, nil, nil)
+			go func() {
+				if err := docker.StartContainer(ctx, selected.Name, selected.Image, nil, nil); err != nil {
+					fmt.Printf("[ERROR] failed to start container: %v\n", err)
+				}
+			}()
 		case 'r':
-			go docker.RestartContainer(ctx, selected.Name)
+			go func() {
+				if err := docker.RestartContainer(ctx, selected.Name); err != nil {
+					fmt.Printf("[ERROR] failed to restart container: %v\n", err)
+				}
+			}()
 		case 'l':
 			fmt.Printf("[LOGS] Not implemented: %s\n", selected.Name)
 		case 'q':

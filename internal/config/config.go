@@ -1,7 +1,10 @@
 package config
 
 import (
+	"errors"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -21,6 +24,10 @@ type Config struct {
 }
 
 func LoadConfig(path string) (*Config, error) {
+	ext := strings.ToLower(filepath.Ext(path))
+	if ext != ".yml" && ext != ".yaml" {
+		return nil, errors.New("config file must have .yml or .yaml extension")
+	}
 	file, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err

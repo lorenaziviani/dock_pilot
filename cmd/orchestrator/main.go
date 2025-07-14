@@ -119,7 +119,15 @@ func main() {
 				fmt.Fprintf(w, "dockpilot_service_status{service=\"%s\"} %d\n", svc.Name, statusToMetric(status))
 			}
 		})
-		log.Fatal(http.ListenAndServe(":2112", nil))
+		srv := &http.Server{
+			Addr:              ":2112",
+			Handler:           nil,
+			ReadTimeout:       5 * time.Second,
+			WriteTimeout:      10 * time.Second,
+			ReadHeaderTimeout: 2 * time.Second,
+			IdleTimeout:       60 * time.Second,
+		}
+		log.Fatal(srv.ListenAndServe())
 	default:
 		fmt.Println("Command not recognized. Use: start, stop, restart, status, monitor, dashboard")
 	}

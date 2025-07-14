@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 
-	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 )
@@ -46,6 +45,6 @@ func (d *DockerService) ContainerStatus(ctx context.Context, name string) (strin
 	return containerJSON.State.Status, nil
 }
 
-func (d *DockerService) ListContainers(ctx context.Context) ([]types.Container, error) {
+func (d *DockerService) ListContainers(ctx context.Context) ([]container.Summary, error) {
 	return d.cli.ContainerList(ctx, container.ListOptions{All: true})
 }

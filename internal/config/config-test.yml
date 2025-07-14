@@ -1,0 +1,11 @@
+services:
+  - name: test-api
+    image: test:latest
+    port: 1234
+    healthcheck: /health
+    volumes:
+      - ./data:/app/data
+    networks:
+      - test-net
+    ports:
+      - 1234:1234
