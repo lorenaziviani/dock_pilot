@@ -1,0 +1,5 @@
+services:
+  - name: users-api
+    image: users-api:latest
+    port: 8080
+    healthcheck: /health
